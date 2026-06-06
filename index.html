@@ -183,8 +183,143 @@
     }
     .hero-content {
       position: relative; z-index: 10;
-      text-align: center;
-      display: flex; flex-direction: column; align-items: center; gap: 20px;
+      display: flex; flex-direction: row; align-items: center;
+      gap: 72px; padding: 0 6%;
+      width: 100%;
+    }
+
+    /* ── 3D VIDEO CARD ── */
+    .hero-video-side {
+      flex-shrink: 0;
+      opacity: 0;
+      animation: fadeUp 0.9s ease forwards 200ms;
+    }
+    .video-card-3d {
+      position: relative;
+      width: 260px;
+      perspective: 900px;
+    }
+    .video-card-inner {
+      position: relative;
+      transform: rotateY(18deg) rotateX(4deg);
+      transform-style: preserve-3d;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 2px;
+    }
+    .video-card-3d:hover .video-card-inner {
+      transform: rotateY(0deg) rotateX(0deg);
+    }
+    /* glowing border frame */
+    .video-card-inner::before {
+      content: '';
+      position: absolute; inset: -2px;
+      background: linear-gradient(135deg, var(--cyan), var(--amber), var(--cyan));
+      border-radius: 4px;
+      z-index: -1;
+      opacity: 0.85;
+      filter: blur(1px);
+    }
+    /* corner accents */
+    .video-card-inner::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: 2px;
+      background:
+        linear-gradient(var(--cyan), var(--cyan)) top left / 14px 2px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) top left / 2px 14px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) top right / 14px 2px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) top right / 2px 14px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) bottom left / 14px 2px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) bottom left / 2px 14px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) bottom right / 14px 2px no-repeat,
+        linear-gradient(var(--cyan), var(--cyan)) bottom right / 2px 14px no-repeat;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .hero-video {
+      display: block;
+      width: 260px;
+      height: 462px;
+      object-fit: cover;
+      border-radius: 2px;
+    }
+    /* ambient glow behind card */
+    .video-glow {
+      position: absolute;
+      inset: 10px;
+      background: radial-gradient(ellipse at center, rgba(255,88,65,0.35) 0%, transparent 70%);
+      filter: blur(22px);
+      z-index: -2;
+      transform: translateZ(-20px);
+    }
+    /* reflection */
+    .video-reflection {
+      position: absolute;
+      bottom: -40px; left: 0;
+      width: 260px; height: 40px;
+      background: linear-gradient(to bottom, rgba(255,88,65,0.12), transparent);
+      transform: scaleY(-1) rotateY(18deg) rotateX(4deg);
+      filter: blur(4px);
+      pointer-events: none;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .video-card-3d:hover .video-reflection {
+      transform: scaleY(-1) rotateY(0deg) rotateX(0deg);
+    }
+    /* mute/unmute button */
+    .video-mute-btn {
+      position: absolute;
+      bottom: 14px; right: -12px;
+      width: 36px; height: 36px;
+      background: rgba(240,240,240,0.92);
+      border: 1px solid rgba(255,88,65,0.4);
+      color: var(--cyan);
+      font-size: 16px;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 3;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .video-mute-btn:hover { background: rgba(255,88,65,0.15); }
+
+    /* tap-to-unmute overlay */
+    .video-tap-overlay {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px;
+      background: rgba(0,0,0,0.38);
+      z-index: 4;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .video-tap-overlay.hidden { opacity: 0; pointer-events: none; }
+    .tap-icon { font-size: 32px; }
+    .tap-text {
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: #fff;
+    }
+
+    /* live badge */
+    .video-live-badge {
+      position: absolute;
+      top: 14px; right: -12px;
+      font-family: var(--font-display);
+      font-size: 10px;
+      letter-spacing: 1px;
+      color: #22c55e;
+      border: 1px solid rgba(34,197,94,0.5);
+      background: rgba(240,240,240,0.92);
+      padding: 4px 10px;
+      z-index: 3;
+    }
+
+    /* ── TEXT SIDE ── */
+    .hero-text-side {
+      display: flex; flex-direction: column; gap: 20px;
+      flex: 1;
     }
     .hero-label {
       font-family: var(--font-display);
@@ -197,28 +332,28 @@
     }
     .hero-name {
       font-family: var(--font-display);
-      font-size: 90px;
+      font-size: 72px;
       font-weight: 900;
       color: var(--text);
       line-height: 1;
       opacity: 0;
       transform: translateY(20px);
       animation: fadeUp 0.8s ease forwards;
-      animation-delay: 200ms;
+      animation-delay: 300ms;
     }
     .hero-tagline {
       font-family: var(--font-body);
-      font-size: 26px;
+      font-size: 22px;
       color: var(--muted);
       opacity: 0;
       animation: fadeIn 0.8s ease forwards;
-      animation-delay: 400ms;
+      animation-delay: 500ms;
     }
     .hero-buttons {
-      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+      display: flex; gap: 16px; flex-wrap: wrap;
       opacity: 0;
       animation: fadeIn 0.8s ease forwards;
-      animation-delay: 600ms;
+      animation-delay: 700ms;
     }
     .btn {
       font-family: var(--font-display);
@@ -245,6 +380,11 @@
     .btn-amber:hover {
       background: var(--amber);
       color: #ffffff;
+    }
+
+    @keyframes videoGlowPulse {
+      0%,100% { opacity: 0.7; }
+      50% { opacity: 1; }
     }
 
     /* Scroll indicator */
@@ -896,9 +1036,15 @@
        RESPONSIVE — 768px breakpoint
     ───────────────────────────────────────────── */
     @media (max-width: 768px) {
+      .hero-content { flex-direction: column; gap: 36px; padding-top: 80px; justify-content: center; }
+      .hero-text-side { align-items: center; text-align: center; }
+      .hero-buttons { justify-content: center; }
+      .video-card-3d { width: 180px; }
+      .hero-video { width: 180px; height: 320px; }
+      .video-reflection { width: 180px; }
       .hero-name { font-size: 48px; }
-      .hero-tagline { font-size: 20px; }
-      .hero-label { font-size: 13px; letter-spacing: 2px; }
+      .hero-tagline { font-size: 18px; }
+      .hero-label { font-size: 11px; letter-spacing: 2px; }
 
       .nav-links { display: none; }
       .hamburger { display: flex; }
@@ -967,13 +1113,37 @@
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-      <p class="hero-label">FULL-STACK ENGINEER · AI/ML · 3D SYSTEMS</p>
-      <h1 class="hero-name">M SAI KUSHITH</h1>
-      <p class="hero-tagline">I build things that think, see, and move.</p>
-      <div class="hero-buttons">
-        <a href="#projects" class="btn btn-cyan">View My Work</a>
-        <a href="#contact" class="btn btn-amber">Let's Talk</a>
+
+      <!-- LEFT: 3D Video Card -->
+      <div class="hero-video-side">
+        <div class="video-card-3d">
+          <div class="video-glow"></div>
+          <div class="video-card-inner">
+            <span class="video-live-badge">● INTRO</span>
+            <button class="video-mute-btn" id="mute-btn" title="Toggle sound">🔇</button>
+            <div class="video-tap-overlay" id="tap-overlay">
+              <span class="tap-icon">🔊</span>
+              <span class="tap-text">CLICK ANYWHERE TO UNMUTE</span>
+            </div>
+            <video class="hero-video" id="hero-vid" muted playsinline preload="auto">
+              <source src="Hero Video.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="video-reflection"></div>
+        </div>
       </div>
+
+      <!-- RIGHT: Text -->
+      <div class="hero-text-side">
+        <p class="hero-label">FULL-STACK ENGINEER · AI/ML · 3D SYSTEMS</p>
+        <h1 class="hero-name">M SAI KUSHITH</h1>
+        <p class="hero-tagline">I build things that think, see, and move.</p>
+        <div class="hero-buttons">
+          <a href="#projects" class="btn btn-cyan">View My Work</a>
+          <a href="#contact" class="btn btn-amber">Let's Talk</a>
+        </div>
+      </div>
+
     </div>
 
     <div class="scroll-indicator">
@@ -1669,6 +1839,47 @@
       setTimeout(() => { btn.textContent = 'SEND MESSAGE'; btn.disabled = false; }, 3000);
     }
   }
+
+  // ─── HERO VIDEO ─────────────────────────────────
+  (function() {
+    const vid = document.getElementById('hero-vid');
+    const muteBtn = document.getElementById('mute-btn');
+    const overlay = document.getElementById('tap-overlay');
+
+    vid.muted = true;
+    vid.currentTime = 0;
+    vid.play();
+
+    function doUnmute() {
+      vid.muted = false;
+      muteBtn.textContent = '🔊';
+      overlay.classList.add('hidden');
+    }
+
+    // Only click and touchstart are accepted as real gestures by browsers
+    function gestureUnmute() {
+      doUnmute();
+      document.removeEventListener('click', gestureUnmute);
+      document.removeEventListener('touchstart', gestureUnmute);
+    }
+    document.addEventListener('click', gestureUnmute);
+    document.addEventListener('touchstart', gestureUnmute, { passive: true });
+
+    // Manual mute button toggle
+    muteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      vid.muted = !vid.muted;
+      muteBtn.textContent = vid.muted ? '🔇' : '🔊';
+      if (vid.muted) overlay.classList.remove('hidden');
+      else overlay.classList.add('hidden');
+    });
+
+    // Stop at first frame when ended
+    vid.addEventListener('ended', () => {
+      vid.pause();
+      vid.currentTime = 0;
+    });
+  })();
 
   // ─── THREE.JS HERO ───────────────────────────────
   (function initHeroThree() {
